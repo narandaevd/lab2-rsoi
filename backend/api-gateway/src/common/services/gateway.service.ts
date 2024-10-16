@@ -80,7 +80,13 @@ export class GatewayService {
         uids: JSON.stringify(reservations.map(r => r.paymentUid)),
       }
     }).then(extractData);
-    return this.mergeReservationsAndPayments(reservations, payments);
+    return this.mergeReservationsAndPayments(reservations.map(res => ({
+      ...res,
+      hotel: {
+        ...res.hotel,
+        fullAddress: buildFullAddress(res.hotel)
+      }
+    })), payments);
   }
 
   async createReservation(username: string, dto: CreateReservationRequest) {
