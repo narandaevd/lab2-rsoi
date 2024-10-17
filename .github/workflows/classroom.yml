@@ -137,6 +137,7 @@ jobs:
         run: npm install
       - name: Run Reservation tests
         working-directory: backend/reservation
+        run: npm test
 
       - name: Install dependencies for Loyalty
         working-directory: backend/loyalty
