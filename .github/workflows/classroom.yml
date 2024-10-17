@@ -208,29 +208,30 @@ jobs:
           EOF
 
   autograding:
-    - name: Build images
-      timeout-minutes: 10
-      run: docker compose build
+    steps:
+      - name: Build images
+        timeout-minutes: 10
+        run: docker compose build
 
-    - name: Run containers
-      timeout-minutes: 5
-      run: |
-        docker compose up -d
-        ./scripts/wait-script.sh
-      env:
-        WAIT_PORTS: 8080,8070,8060,8050
+      - name: Run containers
+        timeout-minutes: 5
+        run: |
+          docker compose up -d
+          ./scripts/wait-script.sh
+        env:
+          WAIT_PORTS: 8080,8070,8060,8050
 
-    - name: Run API Tests
-      uses: matt-ball/newman-action@master
-      with:
-        collection: v2/postman/collection.json
-        environment: v2/postman/environment.json
-        delayRequest: 100
-        reporters: '[ "cli" ]'
+      - name: Run API Tests
+        uses: matt-ball/newman-action@master
+        with:
+          collection: v2/postman/collection.json
+          environment: v2/postman/environment.json
+          delayRequest: 100
+          reporters: '[ "cli" ]'
 
-    - uses: education/autograding@v1
-      id: autograder
-      continue-on-error: true
+      - uses: education/autograding@v1
+        id: autograder
+        continue-on-error: true
 
     # - name: Github auto grader mark
     #   uses: Romanow/google-sheet-autograder-marker@v1.0
@@ -242,7 +243,7 @@ jobs:
     #     column_offset: 'F'
     #     mark: "'+"
 
-    - name: Stop containers
-      if: always()
-      continue-on-error: true
-      run: docker compose down -v
+      - name: Stop containers
+        if: always()
+        continue-on-error: true
+        run: docker compose down -v
