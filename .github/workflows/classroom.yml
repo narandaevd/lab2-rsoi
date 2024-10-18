@@ -214,14 +214,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build images
-        timeout-minutes: 10
-        run: docker compose build
+      # - name: Build images
+      #   timeout-minutes: 10
+      #   run: docker compose build
 
       - name: Run containers
         timeout-minutes: 5
         run: |
-          docker compose up -d
           ./scripts/wait-script.sh
         env:
           WAIT_PORTS: 8080,8070,8060,8050
@@ -248,7 +247,7 @@ jobs:
     #     column_offset: 'F'
     #     mark: "'+"
 
-      - name: Stop containers
-        if: always()
-        continue-on-error: true
-        run: docker compose down -v
+      # - name: Stop containers
+      #   if: always()
+      #   continue-on-error: true
+      #   run: docker compose down -v
