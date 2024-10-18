@@ -1,20 +1,19 @@
-import { DefaultValuePipe, Get, Injectable, NotFoundException, ParseIntPipe, Query } from "@nestjs/common";
+import { DefaultValuePipe, Get, Inject, Injectable, NotFoundException, ParseIntPipe, Query } from "@nestjs/common";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { CreateReservationRequest } from "dtos";
 
 const extractData = (res: AxiosResponse) => res.data;
-
+ 
 @Injectable()
 export class GatewayService {
-  constructor() {
-    this.reservationAdapter = axios.create({baseURL: 'http://localhost:8070/api/v1'});
-    this.loyaltyAdapter = axios.create({baseURL: 'http://localhost:8050/api/v1'});
-    this.paymentAdapter = axios.create({baseURL: 'http://localhost:8060/api/v1'});
-  }
-
-  private reservationAdapter: AxiosInstance;
-  private loyaltyAdapter: AxiosInstance;
-  private paymentAdapter: AxiosInstance;
+  constructor(
+    @Inject('RESERVATION_ADAPTER')
+    private readonly reservationAdapter: AxiosInstance,
+    @Inject('LOYALTY_ADAPTER')
+    private readonly loyaltyAdapter: AxiosInstance,
+    @Inject('PAYMENT_ADAPTER')
+    private readonly paymentAdapter: AxiosInstance,
+  ) {}
 
   async getHotels(params: {page: number; size: number}) {
     const response = await this.reservationAdapter.get('hotels', {
